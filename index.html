@@ -1,75 +1,156 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vizitka</title>
-  <style>
-    body {
-      background: #1e1e1e;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+<style>
+  body {
+    background: #1e1e1e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+  }
 
-    .business-card {
-      background: #2a2a2a;
-      color: white;
-      border: 2px solid gold;
-      border-radius: 20px;
-      padding: 30px 40px;
-      width: 400px;
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-      position: relative;
-    }
+  .card-wrapper {
+    perspective: 1200px;
+  }
 
-    .logo {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      width: 50px;
-      height: 50px;
-    }
+  .business-card {
+    width: 300px;
+    height: 200px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+  }
 
-    .name {
-      font-size: 24px;
-      font-weight: bold;
-      margin-top: 80px;
-      color: gold;
-    }
+  .business-card:hover {
+    transform: rotateX(10deg) rotateY(15deg);
+  }
 
-    .title {
-      font-size: 18px;
-      color: #ddd;
-      margin-bottom: 20px;
-    }
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.8s ease;
+  }
 
-    .info {
-      font-size: 14px;
-      line-height: 1.6;
-    }
+  .card-inner.flipped {
+    transform: rotateY(180deg);
+  }
 
-    .info span {
-      display: block;
-      margin-bottom: 5px;
-    }
-  </style>
-</head>
-<body>
-  <div class="business-card">
-    <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gold">
-      <path d="M12 2L2 9l10 13 10-13-10-7z"/>
-    </svg>
-    <div class="name">Filip Ouzký</div>
-    <div class="title">Grafik a Fotograf</div>
-    <div class="info">
-      <span>📞 +420 777 123 456</span>
-      <span>✉️ ouzky.filip@email.cz</span>
-      <span>🌐 www.ouzkyfilip.cz</span>
-      <span>📍 Praha, Česká republika</span>
+  .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 20px;
+    border: 2px solid gold;
+    background: linear-gradient(145deg, #2a2a2a, #202020);
+    color: white;
+    padding: 20px 30px;
+    box-shadow:
+      inset 0 0 10px rgba(255, 255, 255, 0.05),
+      0 0 20px rgba(255, 215, 0, 0.5),
+      0 0 40px rgba(255, 215, 0, 0.3);
+  }
+
+  .card-front {
+    z-index: 2;
+  }
+
+  .card-back {
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    color: gold;
+    text-align: center;
+  }
+
+  .background-ball {
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, gold, #b8860b);
+    border-radius: 50%;
+    position: absolute;
+    opacity: 0.3;
+    z-index: 0;
+  }
+</style>
+
+<!-- Background balls -->
+<div id="balls"></div>
+
+<div class="card-wrapper" id="cardWrapper">
+  <div class="business-card" id="card">
+    <div class="card-inner" id="cardInner">
+      <div class="card-face card-front">
+        <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gold" style="width: 36px; height: 36px; position: absolute; top: 12px; left: 15px;">
+          <path d="M12 2L2 9l10 13 10-13-10-7z"/>
+        </svg>
+        <div style="margin-top: 40px; color: gold; font-size: 24px; font-weight: bold;">Filip Ouzký</div>
+        <div style="font-size: 18px; color: #ddd; margin-bottom: 20px;">Grafik a Fotograf</div>
+        <div style="font-size: 14px; line-height: 1.6;">
+          <div><img src="https://api.iconify.design/mdi:phone.svg?color=%23ffd700" width="16" style="vertical-align: middle; margin-right: 6px;">+420 777 123 456</div>
+          <div><img src="https://api.iconify.design/mdi:email.svg?color=%23ffd700" width="16" style="vertical-align: middle; margin-right: 6px;">ouzkyfilip@email.cz</div>
+          <div><img src="https://api.iconify.design/mdi:web.svg?color=%23ffd700" width="16" style="vertical-align: middle; margin-right: 6px;">www.ouzkyfilip.cz</div>
+          <div><img src="https://api.iconify.design/mdi:map-marker.svg?color=%23ffd700" width="16" style="vertical-align: middle; margin-right: 6px;">Praha, Česká republika</div>
+        </div>
+      </div>
+      <div class="card-face card-back">
+        <h3 style="text-transform: uppercase; font-weight: bold;">DOVEDNOSTI</h3>
+        <ul style="list-style: none; padding: 0; text-align: left;">
+  <li><img src="https://api.iconify.design/simple-icons:adobephotoshop.svg?color=%23ffd700" width="18" style="vertical-align: middle; margin-right: 8px;">Adobe Photoshop</li>
+  <li><img src="https://api.iconify.design/simple-icons:adobeillustrator.svg?color=%23ffd700" width="18" style="vertical-align: middle; margin-right: 8px;">Adobe Illustrator</li>
+  <li><img src="https://api.iconify.design/simple-icons:adobelightroomclassic.svg?color=%23ffd700" width="18" style="vertical-align: middle; margin-right: 8px;">Lightroom</li>
+  <li><img src="https://api.iconify.design/simple-icons:figma.svg?color=%23ffd700" width="18" style="vertical-align: middle; margin-right: 8px;">Figma</li>
+  <li><img src="https://api.iconify.design/mdi:camera.svg?color=%23ffd700" width="18" style="vertical-align: middle; margin-right: 8px;">Fotografování portrétů a produktů</li>
+</ul>
+      </div>
     </div>
   </div>
-</body>
-</html>
+</div>
+
+<script>
+  const card = document.getElementById("card");
+  const cardInner = document.getElementById("cardInner");
+
+  card.addEventListener("click", () => {
+    cardInner.classList.toggle("flipped");
+  });
+
+  const ballsContainer = document.getElementById("balls");
+  const numBalls = 15;
+  const balls = [];
+  const velocities = [];
+
+  for (let i = 0; i < numBalls; i++) {
+    const ball = document.createElement("div");
+    ball.className = "background-ball";
+    ball.style.left = Math.random() * window.innerWidth + "px";
+    ball.style.top = Math.random() * window.innerHeight + "px";
+    ballsContainer.appendChild(ball);
+    balls.push(ball);
+    velocities.push({ dx: Math.random() * 2 - 1, dy: Math.random() * 2 - 1 });
+  }
+
+  function animateBalls() {
+    for (let i = 0; i < balls.length; i++) {
+      const ball = balls[i];
+      let x = parseFloat(ball.style.left);
+      let y = parseFloat(ball.style.top);
+      x += velocities[i].dx;
+      y += velocities[i].dy;
+
+      if (x <= 0 || x + 80 >= window.innerWidth) velocities[i].dx *= -1;
+      if (y <= 0 || y + 80 >= window.innerHeight) velocities[i].dy *= -1;
+
+      ball.style.left = x + "px";
+      ball.style.top = y + "px";
+    }
+    requestAnimationFrame(animateBalls);
+  }
+
+  animateBalls();
+</script>
